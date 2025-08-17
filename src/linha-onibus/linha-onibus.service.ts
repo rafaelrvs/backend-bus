@@ -10,6 +10,8 @@ export class LinhaOnibusService implements OnModuleInit {
   private readonly TTL_SECONDS = 60 * 60 * 12; // 12h
 
   constructor(@Inject(CACHE_MANAGER) private readonly cache: Cache) {}
+
+  // Pré-aquece ao subir o módulo (evita 1º hit frio após restart)
   async onModuleInit() {
     try {
       await this.prewarmEvery12Hours();
@@ -41,10 +43,25 @@ export class LinhaOnibusService implements OnModuleInit {
     }
   }
 
+  async findOne(linha: string) {
+    const url = `https://mobilidadeservicos.mogidascruzes.sp.gov.br/site/transportes/linha_detalhada/${linha}`
+    const res = await fetch(url)
+        const html = await res.text()
+  
+    
+    return html;
+  }
+
+
+
+
+
+
+
   // --- Fetch com timeout + retry leve ---
   private async fetchFromApiWithRetry() {
-    const url = process.env.URLGET ;
-    const TIMEOUT_MS = 10_000;
+    const url = 'https://mobilidadeservicos.mogidascruzes.sp.gov.br/public/buscar-linha';
+    const TIMEOUT_MS = 30_000;
     const RETRIES = 1; // total 2 tentativas (0 + 1)
 
     for (let attempt = 0; attempt <= RETRIES; attempt++) {
@@ -52,9 +69,6 @@ export class LinhaOnibusService implements OnModuleInit {
       const to = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
       try {
-        if (!url) {
-          throw new Error('URL não definida no ambiente');
-        }
         const res = await fetch(url, { signal: controller.signal });
         if (!res.ok) {
           throw new Error(`HTTP ${res.status} ${res.statusText}`);

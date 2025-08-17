@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { LinhaOnibusService } from './linha-onibus.service';
 
 @Controller('linha-onibus')
@@ -9,6 +9,11 @@ export class LinhaOnibusController {
   @Get()
   findAll() { 
     return this.linhaOnibusService.findAll();
+  }
+
+  @Get('horarios/:linha')
+  async getHorarios(@Param('linha') linha: string) {
+    return this.linhaOnibusService.findOne(linha);
   }
 
 }
