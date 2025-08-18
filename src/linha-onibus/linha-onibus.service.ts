@@ -47,15 +47,8 @@ export class LinhaOnibusService implements OnModuleInit {
     const url = `https://mobilidadeservicos.mogidascruzes.sp.gov.br/site/transportes/linha_detalhada/${linha}`
     const res = await fetch(url)
         const html = await res.text()
-  
-    
     return html;
   }
-
-
-
-
-
 
 
   // --- Fetch com timeout + retry leve ---

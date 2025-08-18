@@ -12,7 +12,7 @@ export class LinhaOnibusController {
   }
 
   @Get('horarios/:linha')
-  async getHorarios(@Param('linha') linha: string) {
+  async getHorarios(@Param('linha') linha: string) {    
     return this.linhaOnibusService.findOne(linha);
   }
 
